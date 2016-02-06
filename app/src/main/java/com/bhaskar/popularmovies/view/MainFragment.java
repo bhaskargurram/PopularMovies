@@ -203,18 +203,17 @@ public class MainFragment extends Fragment {
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are avaiable at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecas
-                // http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=ad7ee1290bf0b011cd28f6e3707f17de
+              
                 final String FORECAST_BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
                 final String SORT_PARAM = "sort_by";
                 final String APIPARAM = "api_key";
                 final String PAGE_NO = "page";
-                //"q=94043&mode=json&units=metric&cnt=7&APPID=db6097a4ead74440ce42856c663f3fd1");
 
 
                 Uri builtURI = Uri.parse(FORECAST_BASE_URL).buildUpon()
                         .appendQueryParameter(SORT_PARAM, strings[0])
                         .appendQueryParameter(PAGE_NO, String.valueOf(pageno))
-                        .appendQueryParameter(APIPARAM, "ad7ee1290bf0b011cd28f6e3707f17de")
+                        .appendQueryParameter(APIPARAM, getString(R.string.api_param))
                         .build();
 
                 URL url = new URL(builtURI.toString());

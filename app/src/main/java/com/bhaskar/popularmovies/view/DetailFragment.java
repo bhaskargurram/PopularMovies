@@ -263,18 +263,17 @@ public class DetailFragment extends Fragment {
 
             try {
 
-                //http://api.themoviedb.org/3/movie/281957/videos?api_key=ad7ee1290bf0b011cd28f6e3707f17de
                 final String FORECAST_BASE_URL = "http://api.themoviedb.org/3/movie/" + strings[0] + "/videos?";
                 final String REVIEWS_BASE_URL = "http://api.themoviedb.org/3/movie/" + strings[0] + "/reviews?";
                 final String APIPARAM = "api_key";
 
 
                 Uri builtURI = Uri.parse(FORECAST_BASE_URL).buildUpon()
-                        .appendQueryParameter(APIPARAM, "ad7ee1290bf0b011cd28f6e3707f17de")
+                        .appendQueryParameter(APIPARAM, getString(R.string.api_param))
                         .build();
 
                 Uri builtURI2 = Uri.parse(REVIEWS_BASE_URL).buildUpon()
-                        .appendQueryParameter(APIPARAM, "ad7ee1290bf0b011cd28f6e3707f17de")
+                        .appendQueryParameter(APIPARAM, getString(R.string.api_param))
                         .build();
                 URL url = new URL(builtURI.toString());
                 URL url2 = new URL(builtURI2.toString());

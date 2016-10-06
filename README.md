@@ -7,10 +7,10 @@ This is a movie details application as a part of the Udacity Android Developer N
 Features:<br/>
 It fetches data from the movied database API https://www.themoviedb.org/.<br/>
 Makes use of the newest Material Design and incorporated backward compatibility using support libraries.<br/>
-Sort the movies according to rating or popularity. <br/>
+Allows sorting of movies according to rating or popularity. <br/>
 The user can bookmark a movie as favorite.<br/>
 Movie trailers can be played on youtube by just one click.<br/>
-Also displays movie reviews
+Also displays movie reviews.
 
 
 Libraries used:<br/>

@@ -34,7 +34,7 @@ import java.util.ArrayList;
 /**This class is used to display Favourites bookmarked by the user.
  * This is a fragment which will be displayed on MainActivity
  * It takes data from the sqlite database stored internally and uses Loader Manager to load the data into the gridview
- * */
+ */
 public class Favourites extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     GridView gridView;
     ArrayList<Item> arrayList;
@@ -70,7 +70,7 @@ public class Favourites extends Fragment implements LoaderManager.LoaderCallback
                 if (cursor.getColumnCount() > 0) {
                     getActivity().findViewById(R.id.no_fav).setVisibility(View.GONE);
                     if (!twopane) {
-                        //Mobile device. Transit to Detail Activity
+                        //Mobile device detected. Transiting to Detail Activity
                         Log.d("", "Main fragment single pane onclick");
                         Intent intent = new Intent(getActivity(), DetailActivity.class);
 
@@ -89,7 +89,7 @@ public class Favourites extends Fragment implements LoaderManager.LoaderCallback
                         intent.putExtra("favourites", true);
                         startActivity(intent);
                     } else {
-                        //Tablet Device. Use Communicator interface to send data to other fragment
+                        //Tablet Device detected. Using Communicator interface to send data to other fragment
                         Bundle bundle = new Bundle();
                         bundle.putString("poster_path", cursor.getString(FavouritesContract.COL_POSTER_PATH));
                         bundle.putString("title", cursor.getString(FavouritesContract.COL_TITLE));
@@ -120,22 +120,26 @@ public class Favourites extends Fragment implements LoaderManager.LoaderCallback
         communicator = (Communicator) activity;
         super.onAttach(activity);
     }
-    //OnCreateLoader initializes the loader
+    /**
+     * OnCreateLoader initializes the loader
+     */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(getActivity(), FavouritesContract.FavouritesEntry.CONTENT_URI, FavouritesContract.projection, null, null, null);
     }
-    //The loading of data is finished and onLoadFinished is called
+    /**
+     * The loading of data is finished and onLoadFinished is called
+     */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        //change the adapter
+        //changing the adapter
         adapter.swapCursor(data);
         if (data.getCount() == 0) {
-            //no favorites, so display a textview showing no favorites and hide the gridview
+            //no favorites, so displaying a textview showing no favorites and hiding the gridview
             text.setVisibility(View.VISIBLE);
             gridView.setVisibility(View.GONE);
         } else {
-            //favorites exist. So remove the textView and display the GridView
+            //favorites exist. So removing the textView and displaying the GridView
             text.setVisibility(View.GONE);
             gridView.setVisibility(View.VISIBLE);
         }

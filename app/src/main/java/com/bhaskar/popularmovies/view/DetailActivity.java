@@ -20,6 +20,10 @@ import com.bhaskar.popularmovies.controller.FavouritesContract;
 
 import java.util.Locale;
 
+/**
+ * This activity displays the details of the movie clicked by the user.
+ * It extends AppCompatActivity to give backward compatibility support of Material Design.
+ */
 public class DetailActivity extends AppCompatActivity {
     boolean favourite = false;
 
@@ -28,7 +32,7 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-
+        //create a bundle of all details passed by the MainActivity to be passed to the DetailFragment
         Bundle bundle = new Bundle();
         Intent intent = getIntent();
         bundle.putString("poster_path", intent.getStringExtra("poster_path"));
@@ -45,7 +49,7 @@ public class DetailActivity extends AppCompatActivity {
         bundle.putLong("vote_count", intent.getLongExtra("vote_count", 0));
         bundle.putLong("id", intent.getLongExtra("id", 0));
         bundle.putBoolean("favourites", intent.getBooleanExtra("favourites", false));
-        Log.d("bhaskar", "favourites inside detailactivity" + intent.getBooleanExtra("favourites", false));
+        //see if this movie is a favorite movie
         favourite = intent.getBooleanExtra("favourites", false);
         if (savedInstanceState == null) {
             DetailFragment detail = new DetailFragment();
@@ -58,13 +62,13 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
-
+    //onOptionsItemSelected will be called when user clicks the menu button
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Log.d("bhaskar", "hello");
         switch (item.getItemId()) {
             case R.id.home:
-                Log.d("bhaskar", "home pressed" + favourite);
+                //user has clicked the back button in the app bar. So the app should go back to the MainActivity
                 Intent intent2 = new Intent(DetailActivity.this, MainActivity.class);
 
                 if (favourite) {
@@ -73,18 +77,22 @@ public class DetailActivity extends AppCompatActivity {
                 startActivity(intent2);
                 return true;
             case R.id.like_btn:
+                //this is implemented in the fragment so return false here
                 return false;
 
 
             case R.id.share_trailer:
+                //this is implemented in the fragment so return false here
                 return false;
 
 
             case R.id.fav:
+                //this is implemented in the fragment so return false here
                 return false;
 
 
             case R.id.play:
+                //this is implemented in the fragment so return false here
                 return false;
             default:
                 break;

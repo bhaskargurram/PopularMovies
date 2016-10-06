@@ -2,6 +2,7 @@ package com.bhaskar.popularmovies.model;
 
 /**
  * Created by bhaskar on 25/12/15.
+ * Used for object oriented modelling of Movies
  */
 public class Item {
     String poster_path, overview, release_date, original_title, original_language, title, backdrop_path;

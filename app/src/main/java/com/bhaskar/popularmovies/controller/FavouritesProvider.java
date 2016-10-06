@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 
 /**
  * Created by bhaskar on 1/2/16.
+ * This class is the backbone of sqlite. it acts as a contentprovider so that conflicts are resolved while accessing the database.
  */
 public class FavouritesProvider extends ContentProvider {
     private static final UriMatcher uriMatcher = buildUriMatcher();
@@ -22,6 +23,11 @@ public class FavouritesProvider extends ContentProvider {
         return true;
     }
 
+
+    /**
+     * This function query is used to query the database to fetch appropriate results.
+     * returns a cursor.
+     */
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] strings, String s, String[] strings1, String s1) {
@@ -41,6 +47,9 @@ public class FavouritesProvider extends ContentProvider {
 
     }
 
+    /**
+     * This function getType determines which type to be returned
+     */
     @Nullable
     @Override
     public String getType(Uri uri) {
@@ -55,6 +64,10 @@ public class FavouritesProvider extends ContentProvider {
         return null;
     }
 
+    /**
+     * This function insert takes in an uri and contenvalues which are to be inserted into the database.
+     * It returns an uri.
+     */
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
@@ -75,7 +88,9 @@ public class FavouritesProvider extends ContentProvider {
         getContext().getContentResolver().notifyChange(returnUri, null);
         return returnUri;
     }
-
+    /**
+     * This function delete deletes tuples from the database.
+     */
     @Override
     public int delete(Uri uri, String s, String[] strings) {
         SQLiteDatabase db = dbhelper.getWritableDatabase();
@@ -94,7 +109,9 @@ public class FavouritesProvider extends ContentProvider {
             getContext().getContentResolver().notifyChange(uri, null);
         return returnVal;
     }
-
+    /**
+     *This function update is used to update the values of few tuples in a database.
+     */
     @Override
     public int update(Uri uri, ContentValues contentValues, String s, String[] strings) {
         SQLiteDatabase db = dbhelper.getWritableDatabase();
@@ -113,7 +130,9 @@ public class FavouritesProvider extends ContentProvider {
             getContext().getContentResolver().notifyChange(uri, null);
         return returnVal;
     }
-
+    /**
+     *This function buildUriMatcher build a UriMatcher to be used to match URI's
+     */
     static UriMatcher buildUriMatcher() {
         UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         String authority = FavouritesContract.CONTENT_AUTHORITY;

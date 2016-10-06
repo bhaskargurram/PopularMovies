@@ -2,6 +2,7 @@ package com.bhaskar.popularmovies.model;
 
 /**
  * Created by bhaskar on 6/2/16.
+ * Used for object oriented modelling of Reviews
  */
 public class ReviewItem {
     public String author, comment;

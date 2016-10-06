@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 /**
  * Created by bhaskar on 25/12/15.
+ * This is an adpater class for the movie grids displayed on MainActivity.
  */
 public class GridAdapter extends BaseAdapter {
     Context context;

@@ -14,8 +14,11 @@ import com.squareup.picasso.Picasso;
 
 /**
  * Created by bhaskar on 1/2/16.
+ * This is an adapter class for the Favourites gridview.
+ * It extends Cursor Adapter
  */
 public class FavouriteAdapter extends CursorAdapter {
+
     public FavouriteAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
     }

@@ -2,6 +2,7 @@ package com.bhaskar.popularmovies.model;
 
 /**
  * Created by bhaskar on 4/2/16.
+ * Used for Object oriented modelling of trailers
  */
 public class TrailerItem {
 String name,key;

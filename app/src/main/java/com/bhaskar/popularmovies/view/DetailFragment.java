@@ -48,10 +48,12 @@ import java.net.URL;
 import java.util.ArrayList;
 
 
-//http://api.themoviedb.org/3/movie/281957/videos?api_key=ad7ee1290bf0b011cd28f6e3707f17de
-
 /**
  * Created by bhaskar on 5/2/16.
+ */
+
+/**
+ * This is a fragment which will be displayed on DetailActivity
  */
 public class DetailFragment extends Fragment {
     String poster_path, overview, release_date, original_title, original_language, title, backdrop_path;
@@ -72,38 +74,52 @@ public class DetailFragment extends Fragment {
     ListView trailers, reviews;
     ArrayList<TrailerItem> arrayList;
     ArrayList<ReviewItem> arrayList2;
-View view;
-    boolean favourite=false;
+    View view;
+    boolean favourite = false;
+/**
+ * This function onCreateView will be called when the UI is first created. So I have overridden it to inflate the appropriate view.
+ * */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //inflating view from activity_detail_frag
         View rootView = inflater.inflate(R.layout.activity_detail_frag, container, false);
         setHasOptionsMenu(true);
+        //taking the arguments passsed from FragmentActivity which contains details of all movies
         Bundle bundle = getArguments();
-        if (bundle != null) {
 
+        if (bundle != null) {
+            //putting appropriate data into the variables
             initialize(bundle);
-            updateUI(rootView);
+            //initializing the display views
+            initializeUI(rootView);
+            //fetching trailers and reviews
             new LoadData().execute(String.valueOf(id));
+
+            //updating the toolbar
             Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
 
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
+            //setting appropriate data into the views
             setData();
-            Log.d("", "bundle is not null");
-        } else {
-            Log.d("", "bundle is null");
+
         }
-view=rootView.findViewById(R.id.snack);
+
+        view = rootView.findViewById(R.id.snack);
         return rootView;
     }
 
+
+    /*
+    * setData() will set the data into the views
+    * */
     public void setData() {
 
 
         overview_text.setText(overview);
-      ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(title);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(title);
         release_date_text.setText(Html.fromHtml("<b>" + RELEASE_DATE + "</b>" + release_date));
         original_title_text.setText(Html.fromHtml("<b>" + ORIGINAL_TITLE + "</b>" + original_title));
         original_language_text.setText(Html.fromHtml("<b>" + ORIGINAL_LANGUAGE + "</b>" + original_language));
@@ -116,10 +132,13 @@ view=rootView.findViewById(R.id.snack);
         vote_average_text.setText(Html.fromHtml("<b>" + VOTE_AVERAGE + "</b>" + vote_average));
         vote_count_text.setText(Html.fromHtml("<b>" + VOTE_COUNT + "</b>" + vote_count));
         Picasso.with(getActivity()).load(backdrop_path).placeholder(R.drawable.ic_launcher).error(R.drawable.ic_launcher).noFade().into(backdrop_image);
-//
-    }
 
-    private void updateUI(View view) {
+    }
+/*
+ * initializeUI() will take the rootview inflated and will initialize all the views in its subtree to be used in this fragment
+ * It also puts an onClickListener to the floating action button
+ */
+    private void initializeUI(View view) {
         overview_text = (TextView) view.findViewById(R.id.overview_text);
         release_date_text = (TextView) view.findViewById(R.id.release_date_text);
         original_title_text = (TextView) view.findViewById(R.id.original_title_text);
@@ -143,7 +162,9 @@ view=rootView.findViewById(R.id.snack);
 
 
     }
-
+/*
+* put the data from the bundle into appropriate variables
+* */
     public void initialize(Bundle bundle) {
         poster_path = bundle.getString("poster_path");
         overview = bundle.getString("overview");
@@ -158,28 +179,31 @@ view=rootView.findViewById(R.id.snack);
         vote_average = bundle.getDouble("vote_average", 0);
         vote_count = bundle.getLong("vote_count", 0);
         id = bundle.getLong("id", 0);
-        favourite=bundle.getBoolean("favourites", false);
+        favourite = bundle.getBoolean("favourites", false);
         Log.d("", "poster_path=" + poster_path);
         Log.d("bhaskar", "favourite=" + favourite);
 
     }
-
+/*
+* send() function is use for sharing text to other applications.
+* */
     private Intent send() {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, title + ": " + overview + " #PopularMovies"+" Watch the trailer here http://www.youtube.com/watch?v=\"" + arrayList.get(0).getKey());
+        intent.putExtra(Intent.EXTRA_TEXT, title + ": " + overview + " #PopularMovies" + " Watch the trailer here http://www.youtube.com/watch?v=\"" + arrayList.get(0).getKey());
         return intent;
 
     }
 
+//creaing the Options Menu
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         getActivity().getMenuInflater().inflate(R.menu.detail_menu, menu);
         MenuItem item = menu.findItem(R.id.like_btn);
-
+        //It checks if the movie is a favorite movie. If yes change the favorite icon to display as favorite
         Cursor cursor = getActivity().getContentResolver().query(FavouritesContract.FavouritesEntry.CONTENT_URI
                 , new String[]{FavouritesContract.FavouritesEntry._ID},
                 FavouritesContract.FavouritesEntry.COLUMN_MOVIE_ID + "=?", new String[]{String.valueOf(id)}, null);
@@ -201,10 +225,12 @@ view=rootView.findViewById(R.id.snack);
 
 
             case R.id.home:
-               return false;
+                //this part is implemented in DetailActivity. So returning false
+                return false;
 
 
             case R.id.like_btn:
+                //the user clicked the like icon. So updating into the database that this movie is liked.
                 Cursor cursor = getActivity().getContentResolver().query(FavouritesContract.FavouritesEntry.CONTENT_URI
                         , new String[]{FavouritesContract.FavouritesEntry._ID},
                         FavouritesContract.FavouritesEntry.COLUMN_MOVIE_ID + "=?", new String[]{String.valueOf(id)}, null);
@@ -232,10 +258,11 @@ view=rootView.findViewById(R.id.snack);
 
 
                 }
-               return true;
+                return true;
 
 
             case R.id.share_trailer:
+                //the user clicked the share trailer option
                 if (arrayList.size() > 0) {
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_SEND);
@@ -243,27 +270,27 @@ view=rootView.findViewById(R.id.snack);
                     intent.setType("text/plain");
                     intent.putExtra(Intent.EXTRA_TEXT, "Hey watchout this trailer of " + title + " http://www.youtube.com/watch?v=" + arrayList.get(0).getKey());
                     startActivity(intent);
-                }
-                else
-                {
-                    Toast.makeText(getActivity(),"No trailers available for this movie.",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), "No trailers available for this movie.", Toast.LENGTH_LONG).show();
                 }
                 return true;
 
 
             case R.id.fav:
-                Intent intent=new Intent(getActivity(),MainActivity.class);
-                intent.putExtra("favourite",true);
+                //user wants to see all the favorite movies
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                intent.putExtra("favourite", true);
                 startActivity(intent);
 
                 return true;
 
 
             case R.id.play:
-                if(arrayList.size()>0)
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube://" + arrayList.get(0).getKey())));
+                //user wants to play the trailer. Checking if trailer exists. else displaying no trailer message
+                if (arrayList.size() > 0)
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube://" + arrayList.get(0).getKey())));
                 else
-                    Toast.makeText(getActivity(),"No trailer available for this movie.",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "No trailer available for this movie.", Toast.LENGTH_LONG).show();
                 return true;
             default:
                 break;
@@ -274,7 +301,9 @@ view=rootView.findViewById(R.id.snack);
         return false;
     }
 
-
+/*
+* LoadData is an inner class which is used to fetch the movie reviews and the trailers asynchronously.
+* */
     public class LoadData extends AsyncTask<String, Void, Void> {
 
         String forecastJsonStr = null;
@@ -284,6 +313,7 @@ view=rootView.findViewById(R.id.snack);
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            //creating 2 arraylists
             arrayList = new ArrayList<TrailerItem>();
             arrayList2 = new ArrayList<ReviewItem>();
         }
@@ -319,13 +349,13 @@ view=rootView.findViewById(R.id.snack);
                         .build();
                 URL url = new URL(builtURI.toString());
                 URL url2 = new URL(builtURI2.toString());
-                // Create the request to OpenWeatherMap, and open the connection
+                // Creating the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();
 
 
-                // Read the input stream into a String
+                // Reading the input stream into a String
                 InputStream inputStream = urlConnection.getInputStream();
                 StringBuffer buffer = new StringBuffer();
                 if (inputStream == null) {
@@ -336,9 +366,7 @@ view=rootView.findViewById(R.id.snack);
 
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                    // But it does make debugging a *lot* easier if you print out the completed
-                    // buffer for debugging.
+
                     buffer.append(line + "\n");
                 }
 
@@ -349,7 +377,6 @@ view=rootView.findViewById(R.id.snack);
                 forecastJsonStr = buffer.toString();
                 parseString(forecastJsonStr);
 
-//-----------------------------------------------------------------------------------------------------------------------//
                 urlConnection2 = (HttpURLConnection) url2.openConnection();
                 urlConnection2.setRequestMethod("GET");
                 urlConnection2.connect();
@@ -418,7 +445,9 @@ view=rootView.findViewById(R.id.snack);
                 e.printStackTrace();
             }
         }
-
+/**
+ * parseReviewString function taked input a string in Json format and parses it.
+ */
         private void parseReviewString(String reviewsJsonStr) {
             try {
                 JSONObject outerObject = new JSONObject(reviewsJsonStr);
@@ -434,11 +463,15 @@ view=rootView.findViewById(R.id.snack);
             }
 
         }
-
+/**
+ *
+ * onPostExecute will be called when the details are fetched.
+ * So set the adapter of the listview
+ * */
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-          //  trailers.setAdapter(new TrailerAdapter(getActivity(), arrayList));
+            //  trailers.setAdapter(new TrailerAdapter(getActivity(), arrayList));
             reviews.setAdapter(new ReviewAdapter(getActivity(), arrayList2));
 
         }

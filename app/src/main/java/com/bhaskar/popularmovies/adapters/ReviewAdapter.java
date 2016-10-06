@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 /**
  * Created by bhaskar on 6/2/16.
+ * This is an adpater for the Reviews Listview to be displayed in the DetailFragment.
  */
 public class ReviewAdapter extends BaseAdapter {
 

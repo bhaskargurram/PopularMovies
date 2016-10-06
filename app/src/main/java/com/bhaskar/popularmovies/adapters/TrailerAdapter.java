@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 /**
  * Created by bhaskar on 4/2/16.
+ * This is an adapter to get trailers of a movie.
  */
 public class TrailerAdapter extends BaseAdapter {
     Context mContext;

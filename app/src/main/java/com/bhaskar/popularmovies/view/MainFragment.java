@@ -72,7 +72,7 @@ public class MainFragment extends Fragment {
         twopane = preferences1.getBoolean("twopane", false);
 
         if (checkAndLoad()) {
-            //Internect Access
+            //Internet Access
             View rootView = inflater.inflate(R.layout.activity_frag_main, container, false);
             gridView = (GridView) rootView.findViewById(R.id.gridView);
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -81,7 +81,7 @@ public class MainFragment extends Fragment {
                     if (arrayList.size() > 0) {
                         Item item = arrayList.get(i);
                         if (!twopane) {
-                            //Mobile Device. Transit to Detail Activity
+                            //Mobile Device detected. Transiting to Detail Activity
                             Intent intent = new Intent(getActivity(), DetailActivity.class);
                             intent.putExtra("poster_path", item.getPoster_path());
                             intent.putExtra("title", item.getTitle());
@@ -97,7 +97,7 @@ public class MainFragment extends Fragment {
                             intent.putExtra("vote_count", item.getVote_count());
                             startActivity(intent);
                         } else {
-                            //Tablet Device. Change the other fragments content.
+                            //Tablet Device detected. Changing the other fragments content.
                             Bundle bundle = new Bundle();
                             bundle.putString("poster_path", item.getPoster_path());
                             bundle.putString("overview", item.getOverview());
@@ -142,7 +142,7 @@ public class MainFragment extends Fragment {
                                 }
                                 preLast = lastItem;
                             }
-                            // you have reached end of list, load more data
+                            // the user reached the end of list. Loading more data
 
                         }
 
@@ -166,7 +166,9 @@ public class MainFragment extends Fragment {
         super.onAttach(activity);
     }
 
-    //This function isConnectingToInternet checks internet connection
+    /**
+     * This function isConnectingToInternet checks internet connection
+     */
     public boolean isConnectingToInternet() {
         ConnectivityManager connectivity = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivity != null) {
@@ -181,7 +183,9 @@ public class MainFragment extends Fragment {
         return false;
     }
 
-    //This function checkAndLoad() first checks if there is an internet connection. If the device has internet access then it loads data and returns true, else it returns false.
+    /**
+    *This function checkAndLoad() first checks if there is an internet connection. If the device has internet access then it loads data and returns true, else it returns false.
+    */
     public boolean checkAndLoad() {
         if (isConnectingToInternet()) {
 
@@ -207,7 +211,7 @@ public class MainFragment extends Fragment {
             super.onPreExecute();
 
         }
-        //In background we have to load movie data and their details through an HttpURLConnection
+        //Loading movie data and their details in background through an HttpURLConnection
         @Override
         protected Void doInBackground(String... strings) {
 
@@ -286,8 +290,11 @@ public class MainFragment extends Fragment {
 
             return null;
         }
-        //This function parseString takes a string input which is in json format.
-        //It parses the data and adds the details in ArrayList
+
+        /**
+         * This function parseString takes a string input which is in json format.
+         * It parses the data and adds the details in ArrayList
+         */
         private void parseString(String forecastJsonStr) {
             String poster_path, overview, release_date, original_title, original_language, title, backdrop_path;
             boolean adult, video;
@@ -321,8 +328,11 @@ public class MainFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-        //This function onPostExecute will be called when the data is completely loaded in background
-        //This function changes the adapter of the grdiview and tells the gridview that its contents have changed
+
+        /**
+         * This function onPostExecute will be called when the data is completely loaded in background
+         * This function changes the adapter of the grdiview and tells the gridview that its contents have changed
+         */
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);

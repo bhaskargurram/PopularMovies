@@ -8,6 +8,7 @@ import android.provider.BaseColumns;
 
 /**
  * Created by bhaskar on 1/2/16.
+ * This class stores the miscellaneous database details.
  */
 public class FavouritesContract {
 

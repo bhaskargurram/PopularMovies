@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements Communicator {
                         .commit();
             }
         }
-//check if the device is a tablet. If the device is a tablet it will load activity_main.xml of sw600dp. So will contain 2 fragments on the main screen.
+        //checking if the device is a tablet. If the device is a tablet it will load activity_main.xml of sw600dp. So will contain 2 fragments on the main screen.
         if (findViewById(R.id.container_for_detail) != null) {
             twopane = true;
             Log.d("", "contains container for detail");
@@ -55,17 +55,20 @@ public class MainActivity extends AppCompatActivity implements Communicator {
 
 
         }
-//setting the title of the action bar
+        //setting the title of the action bar
         getSupportActionBar().setTitle(getString(R.string.app_name));
     }
-//creating menu bar
+
+    //creating menu bar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-//triggerred when a menu item is selected
+
+
+    //triggerred when a menu item is selected
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -73,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements Communicator {
 
 
         if (id == R.id.toggle) {
-//load movies by popularity
+            //The user wants to see movies by popularity.
             getSupportActionBar().setTitle(getString(R.string.app_name));
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, new MainFragment(), MAIN_FRAGMENT_TAG)
@@ -101,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements Communicator {
 
 
         } else if (id == R.id.toggle_ratings) {
-//load movies by rating
+            //The user wants to see movies by ratings.
 
             getSupportActionBar().setTitle(getString(R.string.app_name));
             getSupportFragmentManager().beginTransaction()
@@ -127,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements Communicator {
 
             editor.commit();
         } else if (id == R.id.fav_menu) {
-//load favourites
+            //The user wants to see favorites bookmarked by him.
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, new Favourites(), DETAIL_FRAGMENT_TAG).addToBackStack("favourites")
                     .commit();
@@ -136,7 +139,10 @@ public class MainActivity extends AppCompatActivity implements Communicator {
 
         return super.onOptionsItemSelected(item);
     }
-//this function isConnectingToInternet() checks if internet connection is available
+
+    /**
+     * this function isConnectingToInternet() checks if internet connection is available
+     */
     public boolean isConnectingToInternet() {
         ConnectivityManager connectivity = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivity != null) {
@@ -151,7 +157,9 @@ public class MainActivity extends AppCompatActivity implements Communicator {
         return false;
     }
 
-//overriding the function of communicator interface
+    /**
+     * overriding the function of communicator interface
+     */
     @Override
     public void respond(Bundle bundle) {
         DetailFragment fragment2 = new DetailFragment();

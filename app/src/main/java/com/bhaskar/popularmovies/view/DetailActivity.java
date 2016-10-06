@@ -1,20 +1,33 @@
 package com.bhaskar.popularmovies.view;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.BoolRes;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bhaskar.popularmovies.R;
+import com.bhaskar.popularmovies.controller.FavouritesContract;
 
 import java.util.Locale;
 
 public class DetailActivity extends AppCompatActivity {
+    boolean favourite = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         Bundle bundle = new Bundle();
         Intent intent = getIntent();
@@ -31,7 +44,9 @@ public class DetailActivity extends AppCompatActivity {
         bundle.putDouble("vote_average", intent.getDoubleExtra("vote_average", 0));
         bundle.putLong("vote_count", intent.getLongExtra("vote_count", 0));
         bundle.putLong("id", intent.getLongExtra("id", 0));
-
+        bundle.putBoolean("favourites", intent.getBooleanExtra("favourites", false));
+        Log.d("bhaskar", "favourites inside detailactivity" + intent.getBooleanExtra("favourites", false));
+        favourite = intent.getBooleanExtra("favourites", false);
         if (savedInstanceState == null) {
             DetailFragment detail = new DetailFragment();
             detail.setArguments(bundle);
@@ -43,4 +58,37 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d("bhaskar", "hello");
+        switch (item.getItemId()) {
+            case R.id.home:
+                Log.d("bhaskar", "home pressed" + favourite);
+                Intent intent2 = new Intent(DetailActivity.this, MainActivity.class);
+
+                if (favourite) {
+                    intent2.putExtra("favourite", true);
+                }
+                startActivity(intent2);
+                return true;
+            case R.id.like_btn:
+                return false;
+
+
+            case R.id.share_trailer:
+                return false;
+
+
+            case R.id.fav:
+                return false;
+
+
+            case R.id.play:
+                return false;
+            default:
+                break;
+        }
+        return false;
+    }
 }

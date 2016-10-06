@@ -22,6 +22,6 @@
         android:paddingRight="4dp"
 
         android:text="comment"
-        android:textSize="10sp"
+        android:textSize="14sp"
         android:textStyle="italic" />
 </LinearLayout>

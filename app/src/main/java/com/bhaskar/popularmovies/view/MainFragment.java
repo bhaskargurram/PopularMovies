@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
+
 
 import com.bhaskar.popularmovies.R;
 import com.bhaskar.popularmovies.adapters.GridAdapter;
@@ -42,6 +42,14 @@ import java.util.Locale;
 /**
  * Created by bhaskar on 5/2/16.
  */
+
+
+/**
+ * This is a fragment which will be displayed on the MainActivity.
+ * If the device is a tablet then it sends back data to the other fragment through Communicator interface.
+ * This fragment uses a GridView to display grids of movies.
+ */
+
 public class MainFragment extends Fragment {
 
     GridView gridView;
@@ -55,92 +63,101 @@ public class MainFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.activity_frag_main, container, false);
-        gridView = (GridView) rootView.findViewById(R.id.gridView);
+
+
         arrayList = new ArrayList<Item>();
         SharedPreferences preferences = getActivity().getSharedPreferences("toggle", getActivity().MODE_PRIVATE);
         toggle = preferences.getString("toggle", "popularity.desc");
         SharedPreferences preferences1 = getActivity().getSharedPreferences("twopane_pref", getActivity().MODE_PRIVATE);
         twopane = preferences1.getBoolean("twopane", false);
-        Log.d("", "inside on create of Main Fragment, twopane=" + twopane);
-        checkAndLoad();
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (arrayList.size() > 0) {
-                    Item item = arrayList.get(i);
-                    if (!twopane) {
-                        Log.d("", "Main fragment single pane onclick");
-                        Intent intent = new Intent(getActivity(), DetailActivity.class);
 
-                        intent.putExtra("poster_path", item.getPoster_path());
-                        intent.putExtra("title", item.getTitle());
-                        intent.putExtra("id", item.getId());
-                        intent.putExtra("overview", item.getOverview());
-                        intent.putExtra("release_date", item.getRelease_date());
-                        intent.putExtra("original_title", item.getOriginal_title());
-                        intent.putExtra("original_language", item.getOriginal_language());
-                        intent.putExtra("backdrop_path", "http://image.tmdb.org/t/p/" + "w185" + item.getBackdrop_path());
-                        intent.putExtra("adult", item.isAdult());
-                        intent.putExtra("popularity", item.getPopularity());
-                        intent.putExtra("vote_average", item.getVote_average());
-                        intent.putExtra("vote_count", item.getVote_count());
+        if (checkAndLoad()) {
+            //Internect Access
+            View rootView = inflater.inflate(R.layout.activity_frag_main, container, false);
+            gridView = (GridView) rootView.findViewById(R.id.gridView);
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    if (arrayList.size() > 0) {
+                        Item item = arrayList.get(i);
+                        if (!twopane) {
+                            //Mobile Device. Transit to Detail Activity
+                            Intent intent = new Intent(getActivity(), DetailActivity.class);
+                            intent.putExtra("poster_path", item.getPoster_path());
+                            intent.putExtra("title", item.getTitle());
+                            intent.putExtra("id", item.getId());
+                            intent.putExtra("overview", item.getOverview());
+                            intent.putExtra("release_date", item.getRelease_date());
+                            intent.putExtra("original_title", item.getOriginal_title());
+                            intent.putExtra("original_language", item.getOriginal_language());
+                            intent.putExtra("backdrop_path", "http://image.tmdb.org/t/p/" + "w185" + item.getBackdrop_path());
+                            intent.putExtra("adult", item.isAdult());
+                            intent.putExtra("popularity", item.getPopularity());
+                            intent.putExtra("vote_average", item.getVote_average());
+                            intent.putExtra("vote_count", item.getVote_count());
+                            startActivity(intent);
+                        } else {
+                            //Tablet Device. Change the other fragments content.
+                            Bundle bundle = new Bundle();
+                            bundle.putString("poster_path", item.getPoster_path());
+                            bundle.putString("overview", item.getOverview());
+                            bundle.putString("release_date", item.getRelease_date());
+                            bundle.putString("original_title", item.getOriginal_title());
 
-                        startActivity(intent);
-                    } else {
-                        Log.d("", "Main fragment twopane on click");
-                        Bundle bundle = new Bundle();
-                        bundle.putString("poster_path", item.getPoster_path());
-                        bundle.putString("overview", item.getOverview());
-                        bundle.putString("release_date", item.getRelease_date());
-                        bundle.putString("original_title", item.getOriginal_title());
-
-                        bundle.putString("original_language", new Locale(item.getOriginal_language()).getDisplayLanguage());
-                        bundle.putString("title", item.getTitle());
-                        bundle.putString("backdrop_path", "http://image.tmdb.org/t/p/" + "w185" + item.getBackdrop_path());
-                        bundle.putBoolean("adult", item.isAdult());
-                        bundle.putDouble("popularity", item.getPopularity());
-                        bundle.putDouble("vote_average", item.getVote_average());
-                        bundle.putLong("vote_count", item.getVote_count());
-                        bundle.putLong("id", item.getId());
-                        Log.d("", "inside gridview on click");
-                        communicator.respond(bundle);
-                    }
-                }
-            }
-        });
-        gridView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-            }
-
-            @Override
-            public void onScroll(AbsListView view,
-                                 int firstVisibleItem, int visibleItemCount,
-                                 int totalItemCount) {
-                //Algorithm to check if the last item is visible or not
-                final int lastItem = firstVisibleItem + visibleItemCount;
-
-                if (lastItem == totalItemCount) {
-                    if (lastItem == totalItemCount) {
-                        if (preLast != lastItem) { //to avoid multiple calls for last item
-                            pageno += 1;
-                            if (pageno < total_pages) {
-                                checkAndLoad();
-                            }
-                            preLast = lastItem;
+                            bundle.putString("original_language", new Locale(item.getOriginal_language()).getDisplayLanguage());
+                            bundle.putString("title", item.getTitle());
+                            bundle.putString("backdrop_path", "http://image.tmdb.org/t/p/" + "w185" + item.getBackdrop_path());
+                            bundle.putBoolean("adult", item.isAdult());
+                            bundle.putDouble("popularity", item.getPopularity());
+                            bundle.putDouble("vote_average", item.getVote_average());
+                            bundle.putLong("vote_count", item.getVote_count());
+                            bundle.putLong("id", item.getId());
+                            Log.d("", "inside gridview on click");
+                            communicator.respond(bundle);
                         }
-                        // you have reached end of list, load more data
-
                     }
+                }
+            });
+
+            gridView.setOnScrollListener(new AbsListView.OnScrollListener() {
+                //used to load more movies as the user reaches the end of the list
+                @Override
+                public void onScrollStateChanged(AbsListView view, int scrollState) {
 
                 }
-            }
 
-        });
+                @Override
+                public void onScroll(AbsListView view,
+                                     int firstVisibleItem, int visibleItemCount,
+                                     int totalItemCount) {
+                    //Algorithm to check if the last item is visible or not
+                    final int lastItem = firstVisibleItem + visibleItemCount;
 
-        return rootView;
+                    if (lastItem == totalItemCount) {
+                        if (lastItem == totalItemCount) {
+                            if (preLast != lastItem) { //to avoid multiple calls for last item
+                                pageno += 1;
+                                if (pageno < total_pages) {
+                                    new LoadData().execute(toggle);
+                                }
+                                preLast = lastItem;
+                            }
+                            // you have reached end of list, load more data
+
+                        }
+
+                    }
+                }
+
+            });
+            return rootView;
+        } else {
+            //No Internet Connection
+            View rootView = inflater.inflate(R.layout.no_internet, container, false);
+            return rootView;
+        }
+
+
     }
 
     @Override
@@ -149,6 +166,7 @@ public class MainFragment extends Fragment {
         super.onAttach(activity);
     }
 
+    //This function isConnectingToInternet checks internet connection
     public boolean isConnectingToInternet() {
         ConnectivityManager connectivity = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivity != null) {
@@ -163,27 +181,33 @@ public class MainFragment extends Fragment {
         return false;
     }
 
-    public void checkAndLoad() {
+    //This function checkAndLoad() first checks if there is an internet connection. If the device has internet access then it loads data and returns true, else it returns false.
+    public boolean checkAndLoad() {
         if (isConnectingToInternet()) {
 
             new LoadData().execute(toggle);
+            return true;
         } else {
-            Toast.makeText(getActivity(), "Please check internet connection", Toast.LENGTH_SHORT).show();
+            return false;
         }
 
     }
 
+    /**
+     * This inner class LoadData is used to load Data from the TMDB API.
+     * It extends AsyncTask so as to load data in the background thread.
+     * On fetching the data it changes the adapter of gridview and notifies that the data is changed.
+     */
     public class LoadData extends AsyncTask<String, Void, Void> {
 
         String forecastJsonStr = null;
-
-
+        //Do the initial tasks
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
         }
-
+        //In background we have to load movie data and their details through an HttpURLConnection
         @Override
         protected Void doInBackground(String... strings) {
 
@@ -196,14 +220,10 @@ public class MainFragment extends Fragment {
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
-            // Will contain the raw JSON response as a string.
-
 
             try {
-                // Construct the URL for the OpenWeatherMap query
-                // Possible parameters are avaiable at OWM's forecast API page, at
-                // http://openweathermap.org/API#forecas
-              
+
+
                 final String FORECAST_BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
                 final String SORT_PARAM = "sort_by";
                 final String APIPARAM = "api_key";
@@ -217,30 +237,28 @@ public class MainFragment extends Fragment {
                         .build();
 
                 URL url = new URL(builtURI.toString());
-                // Create the request to OpenWeatherMap, and open the connection
+
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();
 
-                // Read the input stream into a String
+
                 InputStream inputStream = urlConnection.getInputStream();
                 StringBuffer buffer = new StringBuffer();
                 if (inputStream == null) {
-                    // Nothing to do.
+
                     return null;
                 }
                 reader = new BufferedReader(new InputStreamReader(inputStream));
 
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                    // But it does make debugging a *lot* easier if you print out the completed
-                    // buffer for debugging.
+
                     buffer.append(line + "\n");
                 }
 
                 if (buffer.length() == 0) {
-                    // Stream was empty.  No point in parsing.
+
                     return null;
                 }
                 forecastJsonStr = buffer.toString();
@@ -268,7 +286,8 @@ public class MainFragment extends Fragment {
 
             return null;
         }
-
+        //This function parseString takes a string input which is in json format.
+        //It parses the data and adds the details in ArrayList
         private void parseString(String forecastJsonStr) {
             String poster_path, overview, release_date, original_title, original_language, title, backdrop_path;
             boolean adult, video;
@@ -302,7 +321,8 @@ public class MainFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-
+        //This function onPostExecute will be called when the data is completely loaded in background
+        //This function changes the adapter of the grdiview and tells the gridview that its contents have changed
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);

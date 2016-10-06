@@ -16,5 +16,16 @@
         app:showAsAction="never"
 
         />
-
+    <item
+        android:title="Favourites"
+        android:orderInCategory="102"
+        app:showAsAction="never"
+        android:id="@+id/fav"
+        />
+    <item
+        android:title="Play Trailer"
+        android:orderInCategory="102"
+        app:showAsAction="never"
+        android:id="@+id/play"
+        />
 </menu>

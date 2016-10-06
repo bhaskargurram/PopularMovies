@@ -4,12 +4,17 @@
     tools:context=".view.MainActivity">
     <item
         android:id="@+id/toggle"
-        android:title="Rating"
+        android:title="Show movies by popularity"
         android:orderInCategory="100"
         app:showAsAction="never" />
     <item
-        android:title="favourites"
+        android:id="@+id/toggle_ratings"
+        android:title="Show movies by ratings"
         android:orderInCategory="101"
+        app:showAsAction="never" />
+    <item
+        android:title="favourites"
+        android:orderInCategory="102"
         app:showAsAction="never"
         android:id="@+id/fav_menu"
         />

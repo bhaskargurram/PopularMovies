@@ -4,4 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="horizontal_spacing">4dp</dimen>
     <dimen name="vertical_spacing">4dp</dimen>
+    <dimen name="appbar_elevation">8dp</dimen>
+    <dimen name="app_bar_height">240dp</dimen>
 </resources>

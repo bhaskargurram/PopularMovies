@@ -32,4 +32,5 @@ public class FavouriteAdapter extends CursorAdapter {
         Picasso.with(context).load(url).placeholder(R.drawable.ic_launcher).error(R.drawable.ic_launcher).noFade().into(imageView);
 
     }
+
 }

@@ -7,7 +7,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bhaskar.popularmovies.R;
 import com.bhaskar.popularmovies.adapters.ReviewAdapter;
@@ -68,7 +72,8 @@ public class DetailFragment extends Fragment {
     ListView trailers, reviews;
     ArrayList<TrailerItem> arrayList;
     ArrayList<ReviewItem> arrayList2;
-
+View view;
+    boolean favourite=false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_detail_frag, container, false);
@@ -79,21 +84,30 @@ public class DetailFragment extends Fragment {
             initialize(bundle);
             updateUI(rootView);
             new LoadData().execute(String.valueOf(id));
+            Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
+
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
             setData();
             Log.d("", "bundle is not null");
         } else {
             Log.d("", "bundle is null");
         }
-
+view=rootView.findViewById(R.id.snack);
         return rootView;
     }
 
     public void setData() {
+
+
         overview_text.setText(overview);
+      ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(title);
         release_date_text.setText(Html.fromHtml("<b>" + RELEASE_DATE + "</b>" + release_date));
         original_title_text.setText(Html.fromHtml("<b>" + ORIGINAL_TITLE + "</b>" + original_title));
         original_language_text.setText(Html.fromHtml("<b>" + ORIGINAL_LANGUAGE + "</b>" + original_language));
-        title_text.setText(title);
+        //title_text.setText(title);
         if (adult == 1)
             adult_text.setText(Html.fromHtml("<b>" + ADULT + "</b>" + "Yes"));
         else
@@ -110,20 +124,15 @@ public class DetailFragment extends Fragment {
         release_date_text = (TextView) view.findViewById(R.id.release_date_text);
         original_title_text = (TextView) view.findViewById(R.id.original_title_text);
         original_language_text = (TextView) view.findViewById(R.id.original_language_text);
-        title_text = (TextView) view.findViewById(R.id.title_text);
+
         adult_text = (TextView) view.findViewById(R.id.adult_text);
         popularity_text = (TextView) view.findViewById(R.id.popularity_text);
         vote_average_text = (TextView) view.findViewById(R.id.vote_average_text);
         vote_count_text = (TextView) view.findViewById(R.id.vote_count_text);
         backdrop_image = (ImageView) view.findViewById(R.id.background_image);
-        trailers = (ListView) view.findViewById(R.id.listview_trailers);
-        trailers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube://" + arrayList.get(i).getKey())));
-            }
-        });
+
         reviews = (ListView) view.findViewById(R.id.listview_reviews);
+        reviews.setFocusable(false);
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,7 +158,9 @@ public class DetailFragment extends Fragment {
         vote_average = bundle.getDouble("vote_average", 0);
         vote_count = bundle.getLong("vote_count", 0);
         id = bundle.getLong("id", 0);
+        favourite=bundle.getBoolean("favourites", false);
         Log.d("", "poster_path=" + poster_path);
+        Log.d("bhaskar", "favourite=" + favourite);
 
     }
 
@@ -158,7 +169,7 @@ public class DetailFragment extends Fragment {
         intent.setAction(Intent.ACTION_SEND);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, title + ": " + overview + " #PopularMovies");
+        intent.putExtra(Intent.EXTRA_TEXT, title + ": " + overview + " #PopularMovies"+" Watch the trailer here http://www.youtube.com/watch?v=\"" + arrayList.get(0).getKey());
         return intent;
 
     }
@@ -187,6 +198,12 @@ public class DetailFragment extends Fragment {
         int idinside = item.getItemId();
 
         switch (idinside) {
+
+
+            case R.id.home:
+               return false;
+
+
             case R.id.like_btn:
                 Cursor cursor = getActivity().getContentResolver().query(FavouritesContract.FavouritesEntry.CONTENT_URI
                         , new String[]{FavouritesContract.FavouritesEntry._ID},
@@ -215,7 +232,9 @@ public class DetailFragment extends Fragment {
 
 
                 }
-                break;
+               return true;
+
+
             case R.id.share_trailer:
                 if (arrayList.size() > 0) {
                     Intent intent = new Intent();
@@ -225,11 +244,34 @@ public class DetailFragment extends Fragment {
                     intent.putExtra(Intent.EXTRA_TEXT, "Hey watchout this trailer of " + title + " http://www.youtube.com/watch?v=" + arrayList.get(0).getKey());
                     startActivity(intent);
                 }
+                else
+                {
+                    Toast.makeText(getActivity(),"No trailers available for this movie.",Toast.LENGTH_LONG).show();
+                }
+                return true;
+
+
+            case R.id.fav:
+                Intent intent=new Intent(getActivity(),MainActivity.class);
+                intent.putExtra("favourite",true);
+                startActivity(intent);
+
+                return true;
+
+
+            case R.id.play:
+                if(arrayList.size()>0)
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube://" + arrayList.get(0).getKey())));
+                else
+                    Toast.makeText(getActivity(),"No trailer available for this movie.",Toast.LENGTH_LONG).show();
+                return true;
+            default:
                 break;
+
         }
 
 
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
 
@@ -396,8 +438,9 @@ public class DetailFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            trailers.setAdapter(new TrailerAdapter(getActivity(), arrayList));
+          //  trailers.setAdapter(new TrailerAdapter(getActivity(), arrayList));
             reviews.setAdapter(new ReviewAdapter(getActivity(), arrayList2));
+
         }
     }
 

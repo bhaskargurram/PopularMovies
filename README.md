@@ -3,6 +3,7 @@ Get this application on PlayStore at https://play.google.com/store/apps/details?
 
 
 This is a movie details application as a part of the Udacity Android Developer Nanodegree coursework. <br/>
+
 Features:<br/>
 It fetches data from the movied database API https://www.themoviedb.org/.<br/>
 Makes use of the newest Material Design and incorporated backward compatibility using support libraries.<br/>

@@ -2,12 +2,13 @@
 Get this application on PlayStore at https://play.google.com/store/apps/details?id=com.bhaskar.popularmovies
 
 
-This is a movie details application as a part of the Udacity Android Developer Nanodegree coursework. <br/>
+This is an android application as a part of the Udacity Android Developer Nanodegree coursework.
+This application gives all details of movies fetched from The Movie Database API https://www.themoviedb.org/. 
+ <br/>
 
 Features:<br/>
-It fetches data from the movied database API https://www.themoviedb.org/.<br/>
 Makes use of the newest Material Design and incorporated backward compatibility using support libraries.<br/>
-Allows sorting of movies according to rating or popularity. <br/>
+Allows sorting of movies according to ratings or popularity. <br/>
 The user can bookmark a movie as favorite.<br/>
 Movie trailers can be played on youtube by just one click.<br/>
 Also displays movie reviews.
